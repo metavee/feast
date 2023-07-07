@@ -237,8 +237,11 @@ class RedshiftOfflineStore(OfflineStore):
             table_name = offline_utils.get_temp_entity_table_name()
 
             # prepend default schema name if provided
-            if hasattr(config, "default_schema") and config.default_schema:
-                table_name = f"{config.default_schema}.{table_name}"
+            if (
+                isinstance(config.offline_store, RedshiftOfflineStoreConfig)
+                and config.offline_store.default_schema
+            ):
+                table_name = f"{config.offline_store.default_schema}.{table_name}"
 
             _upload_entity_df(
                 entity_df, redshift_client, config, s3_resource, table_name
